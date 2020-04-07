@@ -1,0 +1,110 @@
+---
+title: Mixed integer programming
+subtitle: 
+author: Deependra Dhakal
+date: August, 2019
+institute: |
+  | \textit{ddhakal.rookie@gmail.com}
+  | \url{https://rookie.rbind.io}
+output: 
+  binb::metropolis:
+    includes:
+      in_header: beamer_header_template.tex
+classoption: "aspectratio=169" # "compressed"
+fontsize: 11pt
+bibliography: [./bibliographies.bib]
+---
+
+```{r,setup, include=FALSE}
+library(knitr)
+require(tidyverse)
+set.seed(453)
+# invalidate cache when the package version changes
+knitr::opts_chunk$set(tidy = FALSE, echo = FALSE, 
+                  message = FALSE, warning = FALSE,
+                  out.width = "45%", cache = TRUE)
+options(knitr.table.format = "latex")
+options(knitr.kable.NA = "", digits = 2)
+options(kableExtra.latex.load_packages = FALSE)
+```
+
+# Background
+
+##
+
+- Learn more about integer programming: https://en.wikipedia.org/wiki/Integer_programming
+- Learn from a tutorial post on Assigning students to courses on: https://www.r-orms.org/mixed-integer-linear-programming/practicals/problem-course-assignment/
+- A discourse on Generalized Assignment Problem is found at (combinatorial optimization): https://en.wikipedia.org/wiki/Generalized_assignment_problem
+- Adapt this to fix a problem where we would like to match a group of teachers to a set of classes schedules for different semesters with the following constraints:
+  - Each day classess will run for 2 semester
+  - Each semester has a capacity to take fixed number of classes in a day
+  - Every teacher needs to be assigned to exactly 1 class in each semester. Thus a total of 2 classess each day
+  - All teachers have stated individual preferences on a scale from 1(early morning) to 3 (late morning), where 3 is the most favorable time to take class.
+
+##
+
+```{r}
+library(ompr)
+library(ompr.roi)
+require(tidyverse)
+# the base package ROI offers plugin extensions to different solvers
+# these solvers are then used by ompr
+# install.packages("~/Downloads/ROI.plugin.glpk_0.3-0.tar.gz", repos = NULL, type = "source")
+require(ROI.plugin.glpk) # needs libglpk-dev library
+
+# n number of teachers
+n <- 6
+
+# And m classes with equal capacity (suppose). The capacity can vary among courses though.
+m <- 3 # each teacher must take in both class
+capacity <- rep.int(2, m) # both semesters have equal capacities of taking daily classess, suppose 3 
+
+# In addition, each teacher has three preferences. 
+# To model this we have a function that gives us 3 classes for each teacher. 
+# The first component has preference 1, second 2, and third 3:
+
+set.seed(1234)
+preference_data <- lapply(seq_len(n), function(x) sample(seq_len(m), 2, replace = FALSE))
+preferences <- function(teacher) preference_data[[teacher]]
+
+preferences(2) # preference for class for each teacher. Since there are only two semesters, 
+```
+
+##
+
+- For warehouse location problem see this page: https://dirkschumacher.github.io/ompr/articles/problem-warehouse-location.html
+
+- Types of problems solved by ompr and modelling techniques (with other solvers): https://dirkschumacher.github.io/ompr/articles/modelling.html
+
+##
+
+```{r}
+# Knapsack problem solving (requires glpk to be installed)
+# Learn more about the knapsack problem: https://en.wikipedia.org/wiki/Knapsack_problem
+library(dplyr)
+library(ROI)
+library(ROI.plugin.glpk)
+library(ompr)
+library(ompr.roi)
+max_capacity <- 5
+n <- 10
+weights <- runif(n, max = max_capacity)
+MIPModel() %>%
+  add_variable(x[i], i = 1:n, type = "binary") %>%
+  set_objective(sum_expr(weights[i] * x[i], i = 1:n), "max") %>%
+  add_constraint(sum_expr(weights[i] * x[i], i = 1:n) <= max_capacity) %>%
+  solve_model(with_ROI(solver = "glpk")) %>% 
+  get_solution(x[i]) %>% 
+  filter(value > 0)
+
+```
+
+##
+
+- For sudoku solving: https://www.r-orms.org/mixed-integer-linear-programming/practicals/problem-sudoku/
+- After finishing Generalized assignment, knapsack problem and sudoku solving, hop into travelling salesman problem: https://www.r-orms.org/mixed-integer-linear-programming/practicals/problem-tsp/
+- For more advanced problems refer to matchingMarkets package (requires lpSolve), this inturn uses libgmp-dev gnu library
+
+# Bibliography
+
+## References

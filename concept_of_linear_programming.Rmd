@@ -1,0 +1,143 @@
+---
+title: Concept of linear programming
+author: Deependra Dhakal
+date: \today
+classoption: compress
+toc: true
+output: binb::monash
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, cache=TRUE, dev.args=list(bg=grey(0.9), pointsize=11))
+```
+
+# Intro
+
+## General form
+
+In general linear programming model can be written as:
+
+$$
+\text{Max Z} = \sum_{j=1}^{n}{C_jX_i}
+\tag{1.0}
+$$
+
+Subject to
+
+$$
+\begin{align}
+\sum_{j=1}^{n}{a_{ij}X_i} &\leq bi ; i = 1,2,3...,m
+\tag{1.1}
+\end{align}
+$$
+
+and
+
+$$
+\begin{align}
+X_j &\geq 0; j = 1, 2, 3...,n
+\tag{1.2}
+\end{align}
+$$
+
+where,
+
+$$
+\begin{align}
+Z &= \text{total gross margin} \\
+X_j &= \text{the level of the}\ j^{th}\ \text{activity} \\
+C_j &= \text{the gross margin of the}\ j^{th}\ \text{activity} \\
+a_{ij} &= \text{the quantity of the}\ i^{th}\ \text{resource required to produce a unit of}\ j^{th}\ \text{activity} \\
+b_i &= \text{the amount of the}\ i^{th}\ \text{resource available}
+\end{align}
+$$
+
+
+### Some enumeration
+
+1. The first item
+1. Stuff
+1. Nonsense
+
+# Using R
+
+## Slide with R output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with graphics
+
+```{r pressure}
+plot(pressure)
+```
+
+## Slide with mathematics
+
+Quantile score for observation $y$. For $0<p<1$:
+
+\begin{block}{}
+  \[
+    S(y_t,q_t(p)) = \left\{
+      \begin{array}{rl}
+            p(y_t-q_t(p)) & \text{if $y_t \ge q_t(p)$}\\
+        (1-p)(q_t(p)-y_t) & \text{if $y_t < q_t(p)$}
+      \end{array}\right.
+  \]
+\end{block}
+
+Average score over all percentiles gives the best distribution forecast:
+\[
+  QS = \frac{1}{99T}\sum_{p=1}^{99}\sum_{t=1}^T S(q_t(p),y_t)
+\]
+
+# RMarkdown Examples
+
+## R Figure
+
+The following code generates the plot on the next slide (taken from
+`help(bxp)` and modified slightly):
+
+\small
+
+```{r pressureCode, eval=FALSE, echo=TRUE}
+library(stats)
+set.seed(753)
+bx.p <- boxplot(split(rt(100, 4),
+                      gl(5, 20)), plot=FALSE)
+bxp(bx.p, notch = FALSE, boxfill = "orange",
+    frame = FALSE, outl = TRUE,
+    main = "Example from help(bxp)")
+```
+
+
+## R Figure
+
+```{r pressureFig, echo=FALSE}
+library(stats)
+set.seed(753)
+bx.p <- boxplot(split(rt(100, 4),
+                      gl(5, 20)), plot=FALSE)
+bxp(bx.p, notch = FALSE, boxfill = "orange",
+    frame = FALSE, outl = TRUE,
+    main = "Example from help(bxp)")
+```
+
+## R Table
+
+A simple `knitr::kable` example:
+
+\small
+
+```{r kableEx, echo=TRUE}
+knitr::kable(mtcars[1:4, 1:7],
+       caption="(Parts of) the mtcars dataset")
+```
+
+## Resources
+
+### For more information:
+- See the [RMarkdown repository](https://github.com/rstudio/rmarkdown) for more on RMarkdown
+- See the [binb repository](https://github.com/eddelbuettel/binb) for more on binb
+- See the [binb vignettes](https://github.com/eddelbuettel/binb/vignettes) for more examples.
